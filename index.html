@@ -8,7 +8,7 @@
     <link rel="icon" href="brand/favicon.ico" sizes="any" />
     <link rel="icon" href="brand/hp-favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="base.css?v=1" />
-    <link rel="stylesheet" href="style.css?v=1" />
+    <link rel="stylesheet" href="style.css?v=2" />
   </head>
   <body>
     <main class="wrap">
@@ -43,11 +43,15 @@
             </label>
           </div>
           <details class="more">
-            <summary>Chủ sở hữu (GitHub)</summary>
+            <summary>Tài khoản GitHub</summary>
             <div class="row-2">
               <label class="field"><span>GitHub</span><input name="user" value="hoangpham2263" /></label>
               <label class="field"><span>Email</span><input name="email" value="hoangpham2263@gmail.com" /></label>
             </div>
+            <label class="field token">
+              <span>GitHub token (classic, quyền <code>public_repo</code>) · chỉ lưu trong trình duyệt này</span>
+              <input name="token" type="password" placeholder="ghp_…" autocomplete="off" />
+            </label>
           </details>
         </form>
       </section>
@@ -58,9 +62,10 @@
         <p id="err" class="status err small" hidden></p>
         <div class="actions">
           <button id="copy" type="button">Sao chép</button>
-          <a id="openPR" class="btn primary" target="_blank" rel="noopener">Tạo file trên GitHub ↗</a>
+          <a id="openPR" class="btn" target="_blank" rel="noopener">Tạo tay trên GitHub ↗</a>
+          <button id="sendPR" class="primary" type="button">Gửi Pull Request</button>
         </div>
-        <p class="muted small">GitHub sẽ mở repo is-a-dev/register với file đã điền sẵn → bấm Commit → Create pull request. Duyệt xong tên miền mới chạy.</p>
+        <p id="prStatus" class="status small"></p>
       </section>
 
       <section class="card">
@@ -86,6 +91,6 @@
 
       <footer class="muted small">Làm bởi <a href="https://hoangpham.is-a.dev" target="_blank" rel="noopener">Phạm Quốc Hoàng</a> · MIT</footer>
     </main>
-    <script src="app.js?v=1"></script>
+    <script src="app.js?v=3"></script>
   </body>
 </html>

@@ -69,6 +69,70 @@
     renderSaved();
   });
 
+  // ---------- one-click pull request (GitHub API, token kept only in this browser) ----------
+  const UP = "is-a-dev/register";
+  form.token.value = localStorage.getItem("domain-token") || "";
+  form.token.addEventListener("change", () => { try { localStorage.setItem("domain-token", form.token.value.trim()); } catch {} });
+  const status = (html, cls = "") => { $("prStatus").className = `status small ${cls}`; $("prStatus").innerHTML = html; };
+  const b64 = (t) => btoa(String.fromCharCode(...new TextEncoder().encode(t)));
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  // Fork → sync fork → branch → write (or delete) the file → open the PR on is-a-dev/register
+  async function pullRequest(r, remove = false) {
+    const token = form.token.value.trim();
+    if (!token) { form.closest("section").querySelector("details").open = true; form.token.focus(); throw new Error("Dán GitHub token trước (mục Tài khoản GitHub)."); }
+    const gh = async (path, opts = {}) => {
+      const res = await fetch(`https://api.github.com${path}`, { ...opts, headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", ...(opts.body ? { "Content-Type": "application/json" } : {}) } });
+      if (res.status === 401) throw new Error("Token sai hoặc hết hạn.");
+      const data = res.status === 204 ? {} : await res.json().catch(() => ({}));
+      if (!res.ok) throw Object.assign(new Error(data.message || `GitHub lỗi ${res.status}`), { status: res.status });
+      return data;
+    };
+    status("Đang kiểm tra tài khoản…");
+    const me = (await gh("/user")).login;
+    status("Đang fork is-a-dev/register…");
+    await gh(`/repos/${UP}/forks`, { method: "POST", body: "{}" });
+    const fork = `${me}/register`;
+    for (let i = 0; i < 20; i++) { try { await gh(`/repos/${fork}`); break; } catch { await wait(1500); } }
+    status("Đang đồng bộ bản fork…");
+    await gh(`/repos/${fork}/merge-upstream`, { method: "POST", body: JSON.stringify({ branch: "main" }) }).catch(() => {});
+    const base = (await gh(`/repos/${fork}/git/ref/heads/main`)).object.sha;
+    const branch = `${r.sub}-${Date.now().toString(36)}`;
+    await gh(`/repos/${fork}/git/refs`, { method: "POST", body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: base }) });
+    // Existing file on the branch → update / delete needs its sha
+    let sha = null;
+    try { sha = (await gh(`/repos/${fork}/contents/${r.file}?ref=${branch}`)).sha; } catch {}
+    if (remove && !sha) throw new Error(`${r.name} chưa có trên is-a.dev nên không cần gỡ.`);
+    status("Đang tạo file…");
+    const verb = remove ? "Remove" : sha ? "Update" : "Register";
+    await gh(`/repos/${fork}/contents/${r.file}`, {
+      method: remove ? "DELETE" : "PUT",
+      body: JSON.stringify({ message: `${verb} ${r.name}`, branch, ...(sha ? { sha } : {}), ...(remove ? {} : { content: b64(r.json) }) }),
+    });
+    status("Đang mở Pull Request…");
+    const pr = await gh(`/repos/${UP}/pulls`, { method: "POST", body: JSON.stringify({
+      title: `${verb} ${r.name}`, head: `${me}:${branch}`, base: "main",
+      body: remove ? `Remove ${r.name}.` : `${verb} ${r.name} → ${r.type} ${r.values.join(", ")}.\n\nPersonal developer use (hosting for my projects).`,
+    }) });
+    return pr.html_url;
+  }
+  async function send(r, remove = false) {
+    $("sendPR").disabled = true;
+    try {
+      const url = await pullRequest(r, remove);
+      status(`✓ Đã gửi Pull Request: <a href="${url}" target="_blank" rel="noopener">${url.replace("https://github.com/", "")}</a> · chờ is-a.dev duyệt`, "ok");
+      const saved = store.get().filter((x) => x.name !== r.name);
+      store.set(remove ? saved : [{ name: r.name, type: r.type, values: r.values, at: Date.now(), pr: url }, ...saved]);
+      renderSaved();
+    } catch (err) { status(err.message, "err"); }
+    finally { $("sendPR").disabled = false; }
+  }
+  $("sendPR").onclick = () => {
+    const r = read();
+    if (r.error) return status(r.error, "err");
+    send(r);
+  };
+
   // ---------- DNS check (Cloudflare DNS over HTTPS) ----------
   async function lookup(name, type) {
     const r = await fetch(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(name)}&type=${type}`, { headers: { accept: "application/dns-json" } });
@@ -103,13 +167,14 @@
     const list = store.get();
     $("savedCount").textContent = list.length ? `${list.length} tên` : "";
     if (!list.length) {
-      return $("saved").replaceChildren(Object.assign(document.createElement("p"), { className: "muted small", textContent: "Chưa có. Tên miền sẽ hiện ở đây sau khi bấm \"Tạo file trên GitHub\"." }));
+      return $("saved").replaceChildren(Object.assign(document.createElement("p"), { className: "muted small", textContent: "Chưa có. Tên miền sẽ hiện ở đây sau khi gửi Pull Request." }));
     }
     $("saved").replaceChildren(...list.map((x) => {
       const row = document.createElement("div");
       row.className = "saved-row";
       const link = Object.assign(document.createElement("a"), { href: `https://${x.name}`, target: "_blank", rel: "noopener", textContent: x.name });
       const info = Object.assign(document.createElement("small"), { textContent: `${x.type} ${x.values.join(", ")}` });
+      if (x.pr) info.append(" · ", Object.assign(document.createElement("a"), { href: x.pr, target: "_blank", rel: "noopener", textContent: "PR" }));
       const use = Object.assign(document.createElement("button"), { type: "button", textContent: "Mở" });
       use.onclick = () => {
         form.sub.value = x.name.replace(`.${ROOT}`, "");
@@ -119,8 +184,13 @@
         check(x.name, x);
         window.scrollTo({ top: 0, behavior: "smooth" });
       };
-      const del = Object.assign(document.createElement("button"), { type: "button", className: "icon", textContent: "✕", title: "Bỏ khỏi danh sách" });
-      del.onclick = () => { store.set(store.get().filter((y) => y.name !== x.name)); renderSaved(); };
+      // Gỡ: a pull request that deletes the record on is-a.dev
+      const del = Object.assign(document.createElement("button"), { type: "button", textContent: "Gỡ", title: "Gửi PR gỡ tên miền này" });
+      del.onclick = () => {
+        if (!confirm(`Gửi Pull Request gỡ ${x.name} khỏi is-a.dev?`)) return;
+        const sub = x.name.replace(`.${ROOT}`, "");
+        send({ sub, name: x.name, type: x.type, values: x.values, file: `domains/${sub}.hoangpham.json`, json: "" }, true);
+      };
       row.append(Object.assign(document.createElement("span"), { className: "saved-name" }), use, del);
       row.firstChild.append(link, info);
       return row;

@@ -24,3 +24,11 @@ select:focus { outline: none; border-color: var(--primary); }
   .actions { display: grid; grid-template-columns: 1fr 1fr; }
   .saved-row .actions { display: flex; }
 }
+/* Select: own chevron with room on the right (no browser default arrow) */
+select { appearance: none; -webkit-appearance: none; padding-right: 34px; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; }
+@media (max-width: 640px) { select, input { font-size: 16px !important; } }
+.token code { font-size: 12px; }
+.status a { font-weight: 500; }
+.saved-row button.link { border: 0; background: none; color: var(--warn); padding: 0 6px; }

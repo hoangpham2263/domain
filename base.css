@@ -1,0 +1,131 @@
+:root {
+  --bg: #ffffff;
+  --fg: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --soft: #f1f5f9;
+  --primary: #2563eb;
+  --ok: #15803d;
+  --warn: #c2410c;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1120;
+    --fg: #e2e8f0;
+    --muted: #94a3b8;
+    --border: #1e293b;
+    --soft: #111827;
+    --primary: #3b82f6;
+    --ok: #4ade80;
+    --warn: #fb923c;
+  }
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--primary); }
+code { font: 13px ui-monospace, Menlo, monospace; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+
+/* Layout */
+/* Container like Tailwind's: full width, max 1280px, padding grows with the screen */
+.wrap { width: 100%; max-width: 1280px; margin: 0 auto; padding: 32px 16px 48px; display: grid; gap: 16px; }
+@media (min-width: 640px) { .wrap { padding-left: 24px; padding-right: 24px; } }
+@media (min-width: 1024px) { .wrap { padding-left: 32px; padding-right: 32px; } }
+.top { display: flex; align-items: center; gap: 12px; }
+.top-text { flex: 1; min-width: 0; }
+h1 { margin: 0; font-size: 26px; line-height: 1.25; }
+.brand img { display: block; border-radius: 10px; }
+.back { padding: 6px 10px; border-radius: 999px; font-size: 13px; text-decoration: none; }
+.back:hover { background: var(--soft); }
+.card { display: grid; gap: 10px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 14px; }
+footer { text-align: center; }
+
+/* Controls: 14px text, 36px high */
+input, textarea, button, .btn {
+  font: inherit; font-size: 14px; color: var(--fg);
+  border: 1px solid var(--border); border-radius: 8px; background: var(--bg);
+}
+input { height: 36px; width: 100%; min-width: 0; padding: 0 10px; }
+textarea { width: 100%; min-height: 96px; padding: 10px; resize: vertical; line-height: 1.5; }
+input:focus, textarea:focus { outline: none; border-color: var(--primary); }
+input.bad { border-color: var(--warn); }
+button, .btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 36px; padding: 0 14px; white-space: nowrap; text-decoration: none; cursor: pointer;
+}
+button:hover, .btn:hover { background: var(--soft); }
+button:disabled { opacity: .5; cursor: default; }
+.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+.primary:hover { background: var(--primary); filter: brightness(.92); }
+.icon { width: 36px; padding: 0; }
+.actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+/* Admin: accounts */
+.sec-head { display: flex; justify-content: space-between; align-items: baseline; }
+.sec-head h2 { margin: 0; font-size: 16px; font-weight: 600; }
+.acc-head, .acc-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 36px; gap: 8px; align-items: center; }
+.acc-head { padding: 0 13px; font-size: 14px; }
+.accounts { display: grid; gap: 10px; }
+.acc { padding: 12px; border: 1px solid var(--border); border-radius: 10px; }
+.acc-link { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 8px; align-items: center; margin-top: 10px; font-size: 14px; }
+.acc-link .url { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.acc-link.off .url { color: var(--muted); }
+.acc-link.off button, .acc-link.off a { opacity: .4; pointer-events: none; }
+.publish-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.status { margin: 0; color: var(--muted); }
+.status.ok { color: var(--ok); }
+.status.err { color: var(--warn); }
+
+/* Friend view */
+.who { font-size: 14px; color: var(--muted); }
+.who strong { font-weight: 600; color: var(--fg); }
+.who.missing { padding: 10px 14px; border: 1px solid var(--warn); border-radius: 10px; color: var(--warn); }
+.field { display: grid; gap: 6px; }
+.field label { font-size: 13px; color: var(--muted); }
+.summary { margin: 0; font-size: 13px; color: var(--warn); }
+.summary:empty { display: none; }
+#out { display: grid; gap: 10px; }
+.res { display: grid; gap: 8px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; }
+.res.err { color: var(--warn); }
+.res-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fg); text-decoration: none; }
+.res-name:hover { text-decoration: underline; }
+.res-link { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: center; }
+.res-link .url { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--muted); }
+
+/* How it works */
+.howto { border: 1px solid var(--border); border-radius: 14px; padding: 0 16px; font-size: 14px; }
+.howto summary { cursor: pointer; padding: 12px 0; }
+.howto[open] summary { border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+.howto ol { padding-left: 20px; }
+
+/* Toast */
+.toast {
+  position: fixed; left: 50%; bottom: 24px; z-index: 50; transform: translate(-50%, 12px);
+  padding: 10px 16px; border-radius: 10px; background: #0f172a; color: #fff; font-size: 14px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .18); opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 640px) {
+  .acc-head { display: none; }
+  .acc-link, .res-link { grid-template-columns: 1fr 1fr; }
+  .acc-link > span, .acc-link .url, .res-link .url { grid-column: 1 / -1; }
+  .publish-bar { flex-direction: column-reverse; align-items: stretch; }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; }
+  #copyAll { grid-template-columns: 1fr; }
+  .acc-link button, .acc-link .btn, .res-link button, .res-link .btn, #copyAll button { width: 100%; }
+}
+
+/* Mobile: 16px form text so iOS does not zoom in on focus */
+@media (max-width: 640px) {
+  input, select, textarea { font-size: 16px !important; }
+}

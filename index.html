@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Domain – Trỏ tên miền is-a.dev về hosting</title>
+    <link rel="icon" href="brand/favicon.ico" sizes="any" />
+    <link rel="icon" href="brand/hp-favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="base.css?v=1" />
+    <link rel="stylesheet" href="style.css?v=1" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="top">
+        <a class="brand" href="https://hoangpham.is-a.dev" aria-label="HoangPham"><img src="brand/hp-icon.svg" alt="HoangPham" width="40" height="40" /></a>
+        <div class="top-text"><h1>Trỏ tên miền</h1></div>
+        <a class="back" href="https://hoangpham.is-a.dev/tools">← Portfolio</a>
+      </header>
+
+      <section class="card">
+        <div class="sec-head"><h2>Tên miền con</h2></div>
+        <form id="form" class="form" autocomplete="off">
+          <label class="field">
+            <span>Tên</span>
+            <div class="name-row">
+              <input name="sub" placeholder="demo" required />
+              <span class="suffix" id="suffix">.hoangpham.is-a.dev</span>
+            </div>
+          </label>
+          <div class="row-2">
+            <label class="field">
+              <span>Loại bản ghi</span>
+              <select name="type">
+                <option value="A">A – trỏ IP hosting</option>
+                <option value="CNAME">CNAME – trỏ theo tên host</option>
+                <option value="AAAA">AAAA – IPv6</option>
+              </select>
+            </label>
+            <label class="field">
+              <span id="valueLabel">IP hosting</span>
+              <input name="value" placeholder="1.2.3.4" required />
+            </label>
+          </div>
+          <details class="more">
+            <summary>Chủ sở hữu (GitHub)</summary>
+            <div class="row-2">
+              <label class="field"><span>GitHub</span><input name="user" value="hoangpham2263" /></label>
+              <label class="field"><span>Email</span><input name="email" value="hoangpham2263@gmail.com" /></label>
+            </div>
+          </details>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="sec-head"><h2>File đăng ký</h2><code id="fileName"></code></div>
+        <pre id="json" class="json"></pre>
+        <p id="err" class="status err small" hidden></p>
+        <div class="actions">
+          <button id="copy" type="button">Sao chép</button>
+          <a id="openPR" class="btn primary" target="_blank" rel="noopener">Tạo file trên GitHub ↗</a>
+        </div>
+        <p class="muted small">GitHub sẽ mở repo is-a-dev/register với file đã điền sẵn → bấm Commit → Create pull request. Duyệt xong tên miền mới chạy.</p>
+      </section>
+
+      <section class="card">
+        <div class="sec-head"><h2>Kiểm tra DNS</h2><button id="check" type="button">Kiểm tra</button></div>
+        <div id="dns" class="dns"><p class="muted small">Bấm Kiểm tra để xem tên miền đang trỏ về đâu.</p></div>
+      </section>
+
+      <section class="card">
+        <div class="sec-head"><h2>Tên miền đã tạo</h2><span id="savedCount" class="muted small"></span></div>
+        <div id="saved" class="saved"></div>
+      </section>
+
+      <details class="howto">
+        <summary>Cài trên hosting (cPanel)</summary>
+        <ol>
+          <li>Lấy IP hosting: cột phải của cPanel (Shared IP Address) hoặc email bàn giao.</li>
+          <li>Điền tên + IP ở trên → "Tạo file trên GitHub" → Commit → Create pull request. Chờ duyệt.</li>
+          <li>cPanel → Domains → Create A New Domain: nhập tên miền đầy đủ, chọn thư mục web.</li>
+          <li>WordPress: Cài đặt → Tổng quan, đổi 2 địa chỉ thành https://tên-miền.</li>
+          <li>Khi "Kiểm tra DNS" báo đúng IP: cPanel → SSL/TLS Status → Run AutoSSL để có HTTPS.</li>
+        </ol>
+      </details>
+
+      <footer class="muted small">Làm bởi <a href="https://hoangpham.is-a.dev" target="_blank" rel="noopener">Phạm Quốc Hoàng</a> · MIT</footer>
+    </main>
+    <script src="app.js?v=1"></script>
+  </body>
+</html>

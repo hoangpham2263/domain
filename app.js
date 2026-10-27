@@ -24,29 +24,59 @@
   const isIPv6 = (v) => /^[0-9a-f:]+$/i.test(v) && v.includes(":");
   const isHost = (v) => /^([a-z0-9-]+\.)+[a-z]{2,}$/i.test(v);
 
-  // Current form → { name, file, json, error }
+  // ---------- DNS records table ----------
+  const TYPES = {
+    A: { hint: "IP hosting, vd 103.97.125.20", ok: isIPv4 },
+    AAAA: { hint: "IPv6, vd 2001:db8::1", ok: isIPv6 },
+    CNAME: { hint: "Tên host, vd host.example.com", ok: isHost, single: true },
+    URL: { hint: "Chuyển hướng tới https://…", ok: (v) => /^https?:\/\/\S+$/.test(v), single: true },
+    TXT: { hint: "Nội dung TXT (xác minh…)", ok: (v) => v.length > 0 },
+    MX: { hint: "Máy chủ mail, vd mx.example.com", ok: isHost },
+  };
+  let recs = [{ type: "A", value: "" }];
+  function drawRecs() {
+    $("recs").replaceChildren(...recs.map((rec, i) => {
+      const type = Object.assign(document.createElement("select"), { ariaLabel: "Loại" });
+      type.append(...Object.keys(TYPES).map((t) => Object.assign(document.createElement("option"), { value: t, textContent: t })));
+      type.value = rec.type;
+      const value = Object.assign(document.createElement("input"), { value: rec.value, placeholder: TYPES[rec.type].hint, ariaLabel: "Giá trị" });
+      const del = Object.assign(document.createElement("button"), { type: "button", className: "icon", textContent: "✕", title: "Xóa bản ghi", disabled: recs.length === 1 });
+      type.onchange = () => { rec.type = type.value; drawRecs(); render(); };
+      value.oninput = () => { rec.value = value.value; render(); };
+      del.onclick = () => { recs.splice(i, 1); drawRecs(); render(); };
+      const row = document.createElement("div");
+      row.className = "rec";
+      row.append(type, value, del);
+      return row;
+    }));
+  }
+  $("addRec").onclick = () => { recs.push({ type: "A", value: "" }); drawRecs(); $("recs").lastChild.querySelector("input").focus(); };
+
+  // Current form → { name, file, json, error, rows, type, values }
   function read() {
     const sub = form.sub.value.trim().toLowerCase().replace(/\.hoangpham\.is-a\.dev$/, "").replace(/[^a-z0-9.-]/g, "");
-    const type = form.type.value;
-    const values = form.value.value.split(/[\s,]+/).map((v) => v.trim().replace(/\.$/, "")).filter(Boolean);
+    const rows = recs.map((r) => ({ type: r.type, value: r.value.trim().replace(/\.$/, "") })).filter((r) => r.value);
     let error = "";
-    if (!sub) error = "Nhập tên (vd: demo).";
-    else if (!values.length) error = type === "CNAME" ? "Nhập tên host." : "Nhập IP.";
-    else if (type === "A" && !values.every(isIPv4)) error = "IP không hợp lệ (vd: 103.97.125.20).";
-    else if (type === "AAAA" && !values.every(isIPv6)) error = "IPv6 không hợp lệ.";
-    else if (type === "CNAME" && (values.length > 1 || !isHost(values[0]))) error = "CNAME chỉ nhận một tên host (vd: host.example.com).";
+    const bad = rows.find((r) => !TYPES[r.type].ok(r.value));
+    const single = rows.find((r) => TYPES[r.type].single);
+    if (!sub) error = "Nhập tên miền (vd: demo).";
+    else if (!rows.length) error = "Thêm ít nhất một bản ghi.";
+    else if (bad) error = `${bad.type} "${bad.value}" không hợp lệ (${TYPES[bad.type].hint}).`;
+    else if (single && rows.length > 1) error = `${single.type} phải đứng một mình, không đi kèm bản ghi khác.`;
+    const records = {};
+    for (const r of rows) {
+      if (TYPES[r.type].single) records[r.type] = r.value;
+      else (records[r.type] ||= []).push(r.value);
+    }
     const name = `${sub}.${ROOT}`;
-    const data = {
-      owner: { username: form.user.value.trim(), email: form.email.value.trim() },
-      records: { [type]: type === "CNAME" ? values[0] : values },
-    };
-    return { sub, type, values, name, file: `domains/${sub}.hoangpham.json`, json: JSON.stringify(data, null, 2) + "\n", error };
+    const data = { owner: { username: form.user.value.trim(), email: form.email.value.trim() }, records };
+    const first = rows[0] || { type: "A" };
+    return { sub, name, rows, type: first.type, values: rows.filter((r) => r.type === first.type).map((r) => r.value),
+      file: `domains/${sub}.hoangpham.json`, json: JSON.stringify(data, null, 2) + "\n", error };
   }
 
   function render() {
     const r = read();
-    $("valueLabel").textContent = { A: "IP hosting", CNAME: "Tên host", AAAA: "IPv6" }[r.type];
-    form.value.placeholder = { A: "1.2.3.4", CNAME: "host.example.com", AAAA: "2001:db8::1" }[r.type];
     $("fileName").textContent = r.sub ? r.file : "";
     $("json").textContent = r.json;
     $("err").hidden = !r.error || !form.sub.value;
@@ -56,6 +86,39 @@
     // GitHub's "new file" page with name and content filled in (it offers to fork for the PR)
     $("openPR").href = ok ? `${REPO}/new/main?filename=${encodeURIComponent(r.file)}&value=${encodeURIComponent(r.json)}` : "#";
   }
+
+  // ---------- availability: is the name already registered on is-a.dev? ----------
+  async function lookupName() {
+    const r = read();
+    if (!r.sub) return form.sub.focus();
+    const box = $("avail");
+    box.hidden = false;
+    box.className = "avail";
+    box.textContent = `Đang kiểm tra ${r.name}…`;
+    try {
+      const res = await fetch(`https://raw.githubusercontent.com/is-a-dev/register/main/${r.file}?t=${Date.now()}`);
+      if (res.status === 404) {
+        box.className = "avail free";
+        box.innerHTML = `<strong>✓ ${r.name}</strong><span>Còn trống · thêm bản ghi bên dưới rồi gửi Pull Request</span>`;
+        return;
+      }
+      const cur = await res.json();
+      const mine = (cur.owner?.username || "").toLowerCase() === form.user.value.trim().toLowerCase();
+      // Load its records into the table so they can be edited
+      recs = Object.entries(cur.records || {}).flatMap(([t, v]) => [].concat(v).map((x) => ({ type: TYPES[t] ? t : "TXT", value: String(x) })));
+      if (!recs.length) recs = [{ type: "A", value: "" }];
+      drawRecs();
+      render();
+      box.className = `avail ${mine ? "mine" : "taken"}`;
+      box.innerHTML = mine ? `<strong>${r.name}</strong><span>Đã đăng ký (của bạn) · sửa bản ghi rồi gửi Pull Request để cập nhật</span>`
+        : `<strong>${r.name}</strong><span>Đã có người dùng (${cur.owner?.username || "?"})</span>`;
+    } catch { box.className = "avail taken"; box.textContent = "Không kiểm tra được, thử lại sau."; }
+  }
+  $("lookup").onclick = lookupName;
+  form.sub.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); lookupName(); } });
+  // A different name: the last check no longer applies
+  form.sub.addEventListener("input", () => { $("avail").hidden = true; });
+
   form.addEventListener("input", render);
 
   $("copy").onclick = async () => {
@@ -65,7 +128,7 @@
     const r = read();
     if (r.error) { e.preventDefault(); return toast(r.error); }
     const saved = store.get().filter((x) => x.name !== r.name);
-    store.set([{ name: r.name, type: r.type, values: r.values, at: Date.now() }, ...saved]);
+    store.set([{ name: r.name, type: r.type, values: r.values, rows: r.rows, at: Date.now() }, ...saved]);
     renderSaved();
   });
 
@@ -112,7 +175,7 @@
     status("Đang mở Pull Request…");
     const pr = await gh(`/repos/${UP}/pulls`, { method: "POST", body: JSON.stringify({
       title: `${verb} ${r.name}`, head: `${me}:${branch}`, base: "main",
-      body: remove ? `Remove ${r.name}.` : `${verb} ${r.name} → ${r.type} ${r.values.join(", ")}.\n\nPersonal developer use (hosting for my projects).`,
+      body: remove ? `Remove ${r.name}.` : `${verb} ${r.name} → ${r.rows.map((x) => `${x.type} ${x.value}`).join(", ")}.\n\nPersonal developer use (hosting for my projects).`,
     }) });
     return pr.html_url;
   }
@@ -122,7 +185,7 @@
       const url = await pullRequest(r, remove);
       status(`✓ Đã gửi Pull Request: <a href="${url}" target="_blank" rel="noopener">${url.replace("https://github.com/", "")}</a> · chờ is-a.dev duyệt`, "ok");
       const saved = store.get().filter((x) => x.name !== r.name);
-      store.set(remove ? saved : [{ name: r.name, type: r.type, values: r.values, at: Date.now(), pr: url }, ...saved]);
+      store.set(remove ? saved : [{ name: r.name, type: r.type, values: r.values, rows: r.rows, at: Date.now(), pr: url }, ...saved]);
       renderSaved();
     } catch (err) { status(err.message, "err"); }
     finally { $("sendPR").disabled = false; }
@@ -173,13 +236,13 @@
       const row = document.createElement("div");
       row.className = "saved-row";
       const link = Object.assign(document.createElement("a"), { href: `https://${x.name}`, target: "_blank", rel: "noopener", textContent: x.name });
-      const info = Object.assign(document.createElement("small"), { textContent: `${x.type} ${x.values.join(", ")}` });
+      const info = Object.assign(document.createElement("small"), { textContent: (x.rows || x.values.map((value) => ({ type: x.type, value }))).map((y) => `${y.type} ${y.value}`).join(" · ") });
       if (x.pr) info.append(" · ", Object.assign(document.createElement("a"), { href: x.pr, target: "_blank", rel: "noopener", textContent: "PR" }));
       const use = Object.assign(document.createElement("button"), { type: "button", textContent: "Mở" });
       use.onclick = () => {
         form.sub.value = x.name.replace(`.${ROOT}`, "");
-        form.type.value = x.type;
-        form.value.value = x.values.join(", ");
+        recs = (x.rows || x.values.map((value) => ({ type: x.type, value }))).map((y) => ({ ...y }));
+        drawRecs();
         render();
         check(x.name, x);
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -197,6 +260,7 @@
     }));
   }
 
+  drawRecs();
   render();
   renderSaved();
 })();

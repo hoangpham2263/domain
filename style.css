@@ -32,3 +32,31 @@ select { appearance: none; -webkit-appearance: none; padding-right: 34px; cursor
 .token code { font-size: 12px; }
 .status a { font-weight: 500; }
 .saved-row button.link { border: 0; background: none; color: var(--warn); padding: 0 6px; }
+
+/* Domain search (registrar style) */
+.search { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.search-box { display: flex; align-items: center; height: 44px; padding: 0 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); }
+.search-box:focus-within { border-color: var(--primary); }
+.search-box input { height: 100%; border: 0; padding: 0; font-size: 16px; background: none; }
+.search-box .suffix { color: var(--muted); font-size: 15px; }
+.search .primary { height: 44px; padding: 0 18px; border-radius: 10px; }
+.avail { display: grid; gap: 2px; padding: 10px 12px; border-radius: 10px; font-size: 13px; background: var(--soft); }
+.avail strong { font-size: 15px; }
+.avail span { color: var(--muted); }
+.avail.free { background: color-mix(in srgb, #16a34a 9%, var(--bg)); }
+.avail.free strong { color: #15803d; }
+.avail.mine { background: color-mix(in srgb, var(--primary) 8%, var(--bg)); }
+.avail.taken { background: color-mix(in srgb, var(--warn) 9%, var(--bg)); }
+.avail.taken strong { color: var(--warn); }
+
+/* DNS records table */
+.records { display: grid; gap: 8px; }
+.recs { display: grid; gap: 6px; }
+.rec { display: grid; grid-template-columns: 96px minmax(0, 1fr) 36px; gap: 6px; }
+.add-rec { justify-self: start; font-size: 13px; }
+@media (max-width: 640px) {
+  .search { grid-template-columns: 1fr; }
+  .search-box .suffix { font-size: 13px; }
+  .rec { grid-template-columns: 84px minmax(0, 1fr) 36px; }
+}
+.search-box input { flex: 1; min-width: 0; }

@@ -38,6 +38,12 @@
             <div id="recs" class="recs"></div>
             <button id="addRec" class="link add-rec" type="button">+ Thêm bản ghi</button>
           </div>
+          <p id="err" class="status err small" hidden></p>
+          <div class="actions">
+            <a id="openPR" class="btn" target="_blank" rel="noopener">Tạo tay trên GitHub ↗</a>
+            <button id="sendPR" class="primary" type="button">Gửi Pull Request</button>
+          </div>
+          <p id="prStatus" class="status small"></p>
 
           <details class="more">
             <summary>Tài khoản GitHub</summary>
@@ -53,17 +59,6 @@
         </form>
       </section>
 
-      <section class="card">
-        <div class="sec-head"><h2>File đăng ký</h2><code id="fileName"></code></div>
-        <pre id="json" class="json"></pre>
-        <p id="err" class="status err small" hidden></p>
-        <div class="actions">
-          <button id="copy" type="button">Sao chép</button>
-          <a id="openPR" class="btn" target="_blank" rel="noopener">Tạo tay trên GitHub ↗</a>
-          <button id="sendPR" class="primary" type="button">Gửi Pull Request</button>
-        </div>
-        <p id="prStatus" class="status small"></p>
-      </section>
 
         </div>
         <div class="col">
@@ -93,6 +88,6 @@
 
       <footer class="muted small">Làm bởi <a href="https://hoangpham.is-a.dev" target="_blank" rel="noopener">Phạm Quốc Hoàng</a> · MIT</footer>
     </main>
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
   </body>
 </html>

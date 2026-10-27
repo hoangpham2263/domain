@@ -77,8 +77,6 @@
 
   function render() {
     const r = read();
-    $("fileName").textContent = r.sub ? r.file : "";
-    $("json").textContent = r.json;
     $("err").hidden = !r.error || !form.sub.value;
     $("err").textContent = r.error;
     const ok = !r.error;
@@ -121,9 +119,6 @@
 
   form.addEventListener("input", render);
 
-  $("copy").onclick = async () => {
-    try { await navigator.clipboard.writeText(read().json); toast("✓ Đã sao chép"); } catch { toast("Không sao chép được"); }
-  };
   $("openPR").addEventListener("click", (e) => {
     const r = read();
     if (r.error) { e.preventDefault(); return toast(r.error); }

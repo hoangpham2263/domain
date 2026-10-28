@@ -8,7 +8,7 @@
   let links = {}, sha = null;
 
   const token = () => (document.querySelector('#form [name="token"]')?.value || localStorage.getItem("domain-token") || "").trim();
-  const status = (t, cls = "") => { $("goStatus").className = `status small ${cls}`; $("goStatus").innerHTML = t; };
+  const status = (t, cls = "") => { $("goStatus").className = `status small ${cls}`; $("goStatus").textContent = t; };
   const b64 = (t) => btoa(String.fromCharCode(...new TextEncoder().encode(t)));
   const unb64 = (t) => new TextDecoder().decode(Uint8Array.from(atob(t.replace(/\n/g, "")), (c) => c.charCodeAt(0)));
   async function gh(path, opts = {}) {

@@ -60,3 +60,9 @@ select { appearance: none; -webkit-appearance: none; padding-right: 34px; cursor
   .rec { grid-template-columns: 84px minmax(0, 1fr) 36px; }
 }
 .search-box input { flex: 1; min-width: 0; }
+
+/* /go paths */
+.go-add { display: grid; grid-template-columns: 150px minmax(0, 1fr) 150px auto; gap: 6px; }
+.go-add .search-box { height: 36px; border-radius: 8px; padding: 0 0 0 10px; }
+.go-add .search-box input { font-size: 14px; padding-left: 2px; }
+@media (max-width: 760px) { .go-add { grid-template-columns: 1fr 1fr; } .go-add .search-box, .go-add #goUrl { grid-column: 1 / -1; } }

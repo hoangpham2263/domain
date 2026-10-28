@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
-    <title>Domain – Trỏ tên miền is-a.dev về hosting</title>
+    <title>Đường dẫn /go</title>
     <link rel="icon" href="brand/favicon.ico" sizes="any" />
     <link rel="icon" href="brand/hp-favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="base.css?v=2" />
@@ -14,55 +14,15 @@
     <main class="wrap">
       <header class="top">
         <a class="brand" href="https://hoangpham.is-a.dev" aria-label="HoangPham"><img src="brand/hp-icon.svg" alt="HoangPham" width="40" height="40" /></a>
-        <div class="top-text"><h1>Trỏ tên miền</h1></div>
+        <div class="top-text"><h1>Đường dẫn /go</h1></div>
         <a class="back" href="https://hoangpham.is-a.dev/tools" aria-label="Portfolio">←<span> Portfolio</span></a>
       </header>
 
       <div class="layout">
         <div class="col">
-      <section class="card">
-        <form id="form" class="form" autocomplete="off">
-          <!-- Domain search, like a registrar -->
-          <div class="search">
-            <div class="search-box">
-              <input name="sub" placeholder="Tìm tên miền, vd: demo" aria-label="Tên miền" />
-              <span class="suffix">.hoangpham.is-a.dev</span>
-            </div>
-            <button id="lookup" class="primary" type="button">Kiểm tra</button>
-          </div>
-          <div id="avail" class="avail" hidden></div>
-
-          <!-- DNS records, one row each -->
-          <div class="records">
-            <div class="sec-head"><h2>Bản ghi DNS</h2><span class="muted small">Loại · Giá trị</span></div>
-            <div id="recs" class="recs"></div>
-            <button id="addRec" class="link add-rec" type="button">+ Thêm bản ghi</button>
-          </div>
-          <p id="err" class="status err small" hidden></p>
-          <div class="actions">
-            <a id="openPR" class="btn" target="_blank" rel="noopener">Tạo tay trên GitHub ↗</a>
-            <button id="sendPR" class="primary" type="button">Gửi Pull Request</button>
-          </div>
-          <p id="prStatus" class="status small"></p>
-
-          <details class="more">
-            <summary>Tài khoản GitHub</summary>
-            <div class="row-2">
-              <label class="field"><span>GitHub</span><input name="user" value="hoangpham2263" /></label>
-              <label class="field"><span>Email</span><input name="email" value="hoangpham2263@gmail.com" /></label>
-            </div>
-            <label class="field token">
-              <span>GitHub token (classic, quyền <code>public_repo</code>) · chỉ lưu trong trình duyệt này</span>
-              <input name="token" type="password" placeholder="ghp_…" autocomplete="off" />
-            </label>
-          </details>
-        </form>
-      </section>
-
-
       <!-- Paths under hoangpham.is-a.dev/go/<name>: no DNS change, nothing sent to is-a.dev -->
       <section class="card">
-        <div class="sec-head"><h2>Đường dẫn /go</h2><span class="muted small">Không cần gửi is-a.dev</span></div>
+        <div class="sec-head"><h2>Đường dẫn /go</h2></div>
         <div class="go-add">
           <div class="search-box"><span class="suffix">/go/</span><input id="goName" placeholder="app" aria-label="Tên đường dẫn" /></div>
           <input id="goUrl" placeholder="https://… hoặc http://IP hosting" aria-label="Địa chỉ hosting" inputmode="url" />
@@ -75,36 +35,25 @@
         <p id="goStatus" class="status small"></p>
         <div id="goList" class="saved"></div>
       </section>
-
         </div>
         <div class="col">
       <section class="card">
-        <div class="sec-head"><h2>Kiểm tra DNS</h2><button id="check" type="button">Kiểm tra</button></div>
-        <div id="dns" class="dns"><p class="muted small">Bấm Kiểm tra để xem tên miền đang trỏ về đâu.</p></div>
+        <form id="form" class="form" autocomplete="off">
+          <details class="more">
+            <summary>Tài khoản GitHub</summary>
+            <label class="field token">
+              <span>GitHub token (classic, quyền <code>public_repo</code>) · chỉ lưu trong trình duyệt này</span>
+              <input name="token" type="password" placeholder="ghp_…" autocomplete="off" />
+            </label>
+          </details>
+        </form>
       </section>
-
-      <section class="card">
-        <div class="sec-head"><h2>Tên miền đã tạo</h2><span id="savedCount" class="muted small"></span></div>
-        <div id="saved" class="saved"></div>
-      </section>
-
-      <details class="howto">
-        <summary>Cài trên hosting (cPanel)</summary>
-        <ol>
-          <li>Lấy IP hosting: cột phải của cPanel (Shared IP Address) hoặc email bàn giao.</li>
-          <li>Điền tên + IP ở trên → "Tạo file trên GitHub" → Commit → Create pull request. Chờ duyệt.</li>
-          <li>cPanel → Domains → Create A New Domain: nhập tên miền đầy đủ, chọn thư mục web.</li>
-          <li>WordPress: Cài đặt → Tổng quan, đổi 2 địa chỉ thành https://tên-miền.</li>
-          <li>Khi "Kiểm tra DNS" báo đúng IP: cPanel → SSL/TLS Status → Run AutoSSL để có HTTPS.</li>
-        </ol>
-      </details>
-
         </div>
       </div>
 
       <footer class="muted small">Làm bởi <a href="https://hoangpham.is-a.dev" target="_blank" rel="noopener">Phạm Quốc Hoàng</a> · MIT</footer>
     </main>
-    <script src="app.js?v=5"></script>
-    <script src="go.js?v=1"></script>
+    <script src="app.js?v=6"></script>
+    <script src="go.js?v=2"></script>
   </body>
 </html>

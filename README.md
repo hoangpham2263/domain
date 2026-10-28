@@ -1,10 +1,9 @@
 # Domain
 
-Point a `*.hoangpham.is-a.dev` subdomain at a hosting server.
+Manage short paths `hoangpham.is-a.dev/go/<name>` that lead to hosting servers.
 
-- Fill in the name and the hosting IP (or a CNAME host); the page builds the
-  [is-a.dev](https://github.com/is-a-dev/register) registration file and opens it on GitHub, ready for a pull request.
-- "Kiểm tra DNS" shows where the name points right now (Cloudflare DNS over HTTPS).
-- Names made here are kept in the browser for quick re-checks.
+- Links are saved to `links.json` in [hoangpham2263/go](https://github.com/hoangpham2263/go) through the GitHub API
+  (token kept only in the browser). Nothing is sent to is-a.dev.
+- "Chuyển hướng" jumps to the address; "Nhúng" shows it full page while the address bar stays on `/go/<name>`.
 
 Live: https://hoangpham.is-a.dev/domain/

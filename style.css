@@ -10,8 +10,6 @@
 .dialog::backdrop { background: rgba(15, 23, 42, .45); }
 .dialog-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .dialog-foot .actions { margin-left: auto; }
-.add-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
-@media (max-width: 480px) { .add-row { grid-template-columns: minmax(0, 1fr); } }
 
 /* Select: own chevron with room on the right (no browser default arrow) */
 select { font: inherit; font-size: 14px; color: var(--fg); border: 1px solid var(--border); border-radius: 8px; height: 36px; width: 100%;
@@ -20,13 +18,26 @@ select { font: inherit; font-size: 14px; color: var(--fg); border: 1px solid var
 select:focus { outline: none; border-color: var(--primary); }
 @media (max-width: 640px) { select, input { font-size: 16px !important; } }
 
-/* Saved paths */
-.saved { display: grid; gap: 6px; }
-.saved p { margin: 0; }
-.saved-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; }
-.saved-name { display: grid; min-width: 0; }
-.saved-name a { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: none; }
-.saved-name small { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+/* Links table; rows stack on phones */
+.links { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.links th { padding: 6px 8px; color: var(--muted); font-size: 13px; font-weight: 400; text-align: left; }
+.links td { padding: 8px; border-top: 1px solid var(--border); vertical-align: middle; overflow-wrap: anywhere; }
+.links th:first-child, .links td:first-child { padding-left: 0; }
+.links th:last-child, .links td:last-child { padding-right: 0; }
+.links a { text-decoration: none; }
+.links .c-name { width: 24%; }
+.links .c-mode { width: 170px; }
+.links .c-act { width: 130px; }
+.links .addr { color: var(--muted); font-size: 14px; }
+.links .row-error td { padding-top: 0; border-top: 0; }
+.links .empty td { padding: 12px 0; }
+@media (max-width: 640px) {
+  .links thead { display: none; }
+  .links, .links tbody, .links tr, .links td { display: block; width: 100%; }
+  .links tr { display: grid; gap: 6px; padding: 10px 0; border-top: 1px solid var(--border); }
+  .links td { padding: 0; border-top: 0; }
+  .links .row-error { padding-top: 0; border-top: 0; }
+}
 
 /* /go/ prefix inside the name field */
 .search-box { display: flex; align-items: center; height: 36px; padding: 0 0 0 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); }

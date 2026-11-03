@@ -8,7 +8,7 @@
     <link rel="icon" href="brand/favicon.ico" sizes="any" />
     <link rel="icon" href="brand/hp-favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="base.css?v=5" />
-    <link rel="stylesheet" href="style.css?v=11" />
+    <link rel="stylesheet" href="style.css?v=12" />
   </head>
   <body>
     <main class="wrap">
@@ -29,40 +29,17 @@
           </div>
         </div>
         <p id="goStatus" class="status small" hidden></p>
-        <div id="goList" class="saved"></div>
+        <table class="links">
+          <thead>
+            <tr><th class="c-name">Đường dẫn</th><th>Địa chỉ</th><th class="c-mode">Kiểu</th><th id="actHead" class="c-act" hidden></th></tr>
+          </thead>
+          <tbody id="goList"></tbody>
+        </table>
       </section>
 
       <footer class="muted small">Làm bởi <a href="https://hoangpham.is-a.dev" target="_blank" rel="noopener">Phạm Quốc Hoàng</a> · MIT</footer>
       </div>
     </main>
-
-    <dialog id="addDialog" class="dialog">
-      <form id="addForm" class="form" autocomplete="off">
-        <h2 id="addTitle">Thêm đường dẫn</h2>
-        <div class="add-row">
-          <label class="field">
-            <span>Tên đường dẫn</span>
-            <div class="search-box"><span class="suffix">/go/</span><input id="goName" placeholder="app" /></div>
-          </label>
-          <label class="field">
-            <span>Kiểu</span>
-            <select id="goMode">
-              <option value="redirect">Chuyển hướng</option>
-              <option value="embed">Nhúng (giữ địa chỉ)</option>
-            </select>
-          </label>
-        </div>
-        <label class="field">
-          <span>Địa chỉ hosting</span>
-          <input id="goUrl" placeholder="https://… hoặc http://IP" inputmode="url" />
-        </label>
-        <p id="addStatus" class="status small" hidden></p>
-        <div class="actions">
-          <button type="button" data-close>Huỷ</button>
-          <button id="goSave" class="primary" type="submit">Lưu</button>
-        </div>
-      </form>
-    </dialog>
 
     <dialog id="tokenDialog" class="dialog">
       <form id="tokenForm" class="form" autocomplete="off">
@@ -84,6 +61,6 @@
       </form>
     </dialog>
 
-    <script src="go.js?v=4"></script>
+    <script src="go.js?v=5"></script>
   </body>
 </html>

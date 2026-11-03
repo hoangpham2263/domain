@@ -77,6 +77,8 @@
       info.className = "saved-name";
       info.append(Object.assign(document.createElement("a"), { href: BASE + name, target: "_blank", rel: "noopener", textContent: `/go/${name}` }),
         Object.assign(document.createElement("small"), { textContent: `${x.mode === "embed" ? "Nhúng" : "Chuyển hướng"} → ${x.url}` }));
+      row.append(info);
+      if (!token()) return row; // Visitors only see the list; the buttons appear once a token is set
       const edit = Object.assign(document.createElement("button"), { type: "button", textContent: "Sửa" });
       edit.onclick = () => { $("goName").value = name; $("goUrl").value = x.url; $("goMode").value = x.mode || "redirect"; $("goUrl").focus(); };
       const del = Object.assign(document.createElement("button"), { type: "button", textContent: "Xóa" });
@@ -86,10 +88,13 @@
         delete next[name];
         save(next, `Xóa /go/${name}`);
       };
-      row.append(info, edit, del);
+      row.append(edit, del);
       return row;
     }));
   }
 
+  const tokenField = document.querySelector('#form [name="token"]');
+  tokenField.addEventListener("input", draw);
+  tokenField.addEventListener("change", draw);
   load();
 })();

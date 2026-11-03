@@ -1,13 +1,17 @@
 /* Page-specific bits on top of base.css (shared look with the other tools) */
 .form { display: grid; gap: 12px; }
 .suffix { color: var(--muted); font-size: 14px; white-space: nowrap; }
-.more summary { cursor: pointer; font-size: 13px; color: var(--muted); }
-.more[open] summary { margin-bottom: 10px; }
-.token code, .token-new code { font-size: 12px; }
-.token-new { display: grid; gap: 8px; margin-bottom: 12px; }
-.token-new p { margin: 0; }
-.token-btn { display: flex; align-items: center; justify-content: center; height: 36px; padding: 0 14px; font-size: 14px; border: 1px solid var(--border); border-radius: 8px; color: var(--fg); text-decoration: none; white-space: nowrap; }
-.token-btn:hover { background: var(--soft); }
+.form p { margin: 0; }
+.form code { font-size: 12px; }
+.list-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; }
+
+/* Popups */
+.dialog { width: min(480px, calc(100vw - 32px)); padding: 20px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg); color: var(--fg); }
+.dialog::backdrop { background: rgba(15, 23, 42, .45); }
+.dialog-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.dialog-foot .actions { margin-left: auto; }
+.add-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+@media (max-width: 480px) { .add-row { grid-template-columns: minmax(0, 1fr); } }
 
 /* Select: own chevron with room on the right (no browser default arrow) */
 select { font: inherit; font-size: 14px; color: var(--fg); border: 1px solid var(--border); border-radius: 8px; height: 36px; width: 100%;
@@ -24,11 +28,7 @@ select:focus { outline: none; border-color: var(--primary); }
 .saved-name a { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: none; }
 .saved-name small { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
 
-/* /go add row */
-.search-box { display: flex; align-items: center; border: 1px solid var(--border); background: var(--bg); }
+/* /go/ prefix inside the name field */
+.search-box { display: flex; align-items: center; height: 36px; padding: 0 0 0 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); }
 .search-box:focus-within { border-color: var(--primary); }
-.search-box input { flex: 1; min-width: 0; height: 100%; border: 0; background: none; }
-.layout { grid-template-columns: minmax(0, 1fr); }
-.go-add { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
-.go-add .search-box { height: 36px; border-radius: 8px; padding: 0 0 0 10px; }
-.go-add .search-box input { font-size: 14px; padding: 0 0 0 2px; }
+.search-box input { flex: 1; min-width: 0; height: 100%; padding: 0 0 0 2px; border: 0; background: none; font-size: 14px; }

@@ -3,7 +3,11 @@
 .suffix { color: var(--muted); font-size: 14px; white-space: nowrap; }
 .more summary { cursor: pointer; font-size: 13px; color: var(--muted); }
 .more[open] summary { margin-bottom: 10px; }
-.token code { font-size: 12px; }
+.token code, .token-new code { font-size: 12px; }
+.token-new { display: grid; gap: 8px; margin-bottom: 12px; }
+.token-new p { margin: 0; }
+.token-btn { display: flex; align-items: center; justify-content: center; height: 36px; padding: 0 14px; font-size: 14px; border: 1px solid var(--border); border-radius: 8px; color: var(--fg); text-decoration: none; white-space: nowrap; }
+.token-btn:hover { background: var(--soft); }
 
 /* Select: own chevron with room on the right (no browser default arrow) */
 select { font: inherit; font-size: 14px; color: var(--fg); border: 1px solid var(--border); border-radius: 8px; height: 36px; width: 100%;
@@ -24,7 +28,7 @@ select:focus { outline: none; border-color: var(--primary); }
 .search-box { display: flex; align-items: center; border: 1px solid var(--border); background: var(--bg); }
 .search-box:focus-within { border-color: var(--primary); }
 .search-box input { flex: 1; min-width: 0; height: 100%; border: 0; background: none; }
-.go-add { display: grid; grid-template-columns: 150px minmax(0, 1fr) 150px auto; gap: 6px; }
+.layout { grid-template-columns: minmax(0, 1fr); }
+.go-add { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
 .go-add .search-box { height: 36px; border-radius: 8px; padding: 0 0 0 10px; }
 .go-add .search-box input { font-size: 14px; padding: 0 0 0 2px; }
-@media (max-width: 760px) { .go-add { grid-template-columns: 1fr 1fr; } .go-add .search-box, .go-add #goUrl { grid-column: 1 / -1; } }

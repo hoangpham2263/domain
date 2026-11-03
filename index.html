@@ -8,7 +8,7 @@
     <link rel="icon" href="brand/favicon.ico" sizes="any" />
     <link rel="icon" href="brand/hp-favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="base.css?v=5" />
-    <link rel="stylesheet" href="style.css?v=8" />
+    <link rel="stylesheet" href="style.css?v=10" />
   </head>
   <body>
     <main class="wrap">
@@ -20,6 +20,23 @@
       <div class="content">
 
       <div class="layout">
+        <div class="col">
+      <section class="card">
+        <form id="form" class="form" autocomplete="off">
+          <details class="more">
+            <summary>Tài khoản GitHub</summary>
+            <div class="token-new">
+              <a class="token-btn" href="https://github.com/settings/personal-access-tokens/new?name=Go%20links&amp;description=Save%20links.json%20in%20hoangpham2263%2Fgo&amp;target_name=hoangpham2263&amp;expires_in=366&amp;contents=write" target="_blank" rel="noopener">Tạo token trên GitHub</a>
+              <p class="muted small">Ở mục Repository access chọn Only select repositories → <code>go</code>, bấm Generate token rồi dán vào ô dưới.</p>
+            </div>
+            <label class="field token">
+              <span>GitHub token · chỉ lưu trong trình duyệt này</span>
+              <input name="token" type="password" placeholder="github_pat_…" autocomplete="off" />
+            </label>
+          </details>
+        </form>
+      </section>
+        </div>
         <div class="col">
       <!-- Paths under hoangpham.is-a.dev/go/<name>: no DNS change, nothing sent to is-a.dev -->
       <section class="card">
@@ -37,25 +54,12 @@
         <div id="goList" class="saved"></div>
       </section>
         </div>
-        <div class="col">
-      <section class="card">
-        <form id="form" class="form" autocomplete="off">
-          <details class="more">
-            <summary>Tài khoản GitHub</summary>
-            <label class="field token">
-              <span>GitHub token (classic, quyền <code>public_repo</code>) · chỉ lưu trong trình duyệt này</span>
-              <input name="token" type="password" placeholder="ghp_…" autocomplete="off" />
-            </label>
-          </details>
-        </form>
-      </section>
-        </div>
       </div>
 
       <footer class="muted small">Làm bởi <a href="https://hoangpham.is-a.dev" target="_blank" rel="noopener">Phạm Quốc Hoàng</a> · MIT</footer>
       </div>
     </main>
-    <script src="app.js?v=6"></script>
+    <script src="app.js?v=7"></script>
     <script src="go.js?v=2"></script>
   </body>
 </html>
